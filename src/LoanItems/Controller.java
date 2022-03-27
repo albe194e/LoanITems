@@ -1,6 +1,7 @@
 package LoanItems;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class Controller {
 
@@ -8,24 +9,31 @@ public class Controller {
     ArrayList<LoanItem> loanItems = new ArrayList<>();
 
     public void execute(){
-        int numOfItems = ui.numOfItemsInput();
-        for (int i = 0, j = 1; i < numOfItems; j++, i++) {
+        boolean programRunning = true;
+        int j = 0;
+        ui.introduction();
+
+        while (programRunning){
+            j++;
             ui.displayItemNumber(j);
-            String typeOfItem = ui.typeOfItemInput();
-            String title;
-            if (typeOfItem.equals("book")){
-                ui.initializeTitleInput();
-                title = ui.titleInput();
-                loanItems.add(new Book(title,j));
-            } else if (typeOfItem.equals("video")){
-                ui.initializeTitleInput();
-                title = ui.titleInput();
-                loanItems.add(new Video(title,j));
-            } else {
-                ui.invalidType();
-                i--; j--;
+            String typeOfItem = ui.typeOfItemInput().toLowerCase(Locale.ROOT);
+            switch (typeOfItem){
+                case "book" ->{
+                    ui.introduceTitle();
+                    String bookTitle = ui.titleInput();
+                    loanItems.add(new Book(bookTitle,j));
+                }
+                case "video"->{
+                    ui.introduceTitle();
+                    String videoTitle = ui.titleInput();
+                    loanItems.add(new Video(videoTitle,j));
+                }
+                case "exit"-> programRunning = ui.displayExit();
+                default -> ui.invalidType();
             }
         }
-        System.out.println("LOAN OF ITEMS\n"+loanItems);
+        if (loanItems.size() > 0){
+            System.out.println("LOAN OF ITEMS\n"+loanItems);
+        }
     }
 }
